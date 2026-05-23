@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import pool from '../db/pool';
 import { discordClient, sendApplicationToDiscord } from '../bot/bot';
-import { sendApplicationToTelegram } from '../telegram/sender';
 
 const router = Router();
 
@@ -92,7 +91,6 @@ router.post('/applications', async (req, res) => {
   // Отправить в Discord и Telegram (не блокируем ответ)
   Promise.allSettled([
     sendApplicationToDiscord(appData),
-    sendApplicationToTelegram(appData),
   ]).catch(console.error);
 
   res.json({ success: true, message: 'Заявка успешно отправлена!' });
