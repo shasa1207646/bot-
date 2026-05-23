@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petushara Team — Вступить на сервер</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════
+   ТЕМЫ
+══════════════════════════════════════════════ */
+:root {
+  --bg:      #080b10;
+  --bg2:     #0d1117;
+  --bg3:     #141b24;
+  --card:    #0d1520;
+  --border:  #1e2d3d;
+  --accent:  #00d4ff;
+  --accent2: #7c3aed;
+  --green:   #00ff88;
+  --red:     #ff4444;
+  --yellow:  #ffcc00;
+  --text:    #e2e8f0;
+  --muted:   #4a5568;
+  --shadow:  0 4px 24px rgba(0,0,0,.4);
+}
+[data-theme="light"] {
+  --bg:      #f0f4f8;
+  --bg2:     #ffffff;
+  --bg3:     #e8edf3;
+  --card:    #ffffff;
+  --border:  #cbd5e0;
+  --accent:  #0099cc;
+  --accent2: #6d28d9;
+  --green:   #059669;
+  --red:     #dc2626;
+  --yellow:  #d97706;
+  --text:    #1a202c;
+  --muted:   #718096;
+  --shadow:  0 4px 24px rgba(0,0,0,.1);
+}
+
+/* ══════════════════════════════════════════════
+   BASE
+══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background .3s, color .3s;
+}
+[data-theme="dark"] .bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,212,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+[data-theme="light"] .bg-grid { display: none; }
+.bg-glow {
+  position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 600px;
+  background: radial-gradient(ellipse, rgba(0,212,255,.06) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+[data-theme="light"] .bg-glow { opacity: 0.3; }
+.container { max-width: 900px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════ */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,11,16,.9); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  transition: background .3s;
+}
+[data-theme="light"] nav {
+  background: rgba(240,244,248,.92);
+}
+nav .inner {
+  max-width: 900px; margin: 0 auto; padding: 0 20px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.logo {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.4rem; font-weight: 700; color: var(--accent);
+  letter-spacing: 2px; text-decoration: none;
+}
+.logo span { color: var(--text); }
+.nav-links { display: flex; gap: 4px; flex: 1; }
+.nav-links a {
+  color: var(--muted); text-decoration: none;
+  padding: 6px 12px; border-radius: 6px;
+  font-size: .85rem; transition: all .2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--bg3); }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+
+/* Переключатель темы */
+.theme-btn {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 10px; cursor: pointer;
+  color: var(--muted); font-size: .9rem; transition: all .2s;
+  line-height: 1;
+}
+.theme-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+/* Auth badge */
+#loginBtn {
+  background: linear-gradient(135deg, #5865f2, #4752c4);
+  border: none; border-radius: 8px; padding: 8px 16px; color: #fff;
+  font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 500;
+  cursor: pointer; transition: opacity .2s;
+  display: flex; align-items: center; gap: 8px;
+}
+#loginBtn:hover { opacity: .85; }
+#userBadge {
+  display: none; align-items: center; gap: 8px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 12px;
+}
+#userBadge img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--accent); }
+#userBadge .uname { font-size: .85rem; color: var(--text); font-weight: 500; }
+.logout-link {
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: .75rem; padding: 2px 6px;
+  border-radius: 4px; transition: color .2s;
+}
+.logout-link:hover { color: var(--red); }
+
+/* ══════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════ */
+.hero { padding: 80px 0 60px; text-align: center; }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0,212,255,.08); border: 1px solid rgba(0,212,255,.2);
+  border-radius: 20px; padding: 4px 14px; margin-bottom: 24px;
+  font-size: .78rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase;
+}
+.hero h1 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 700; line-height: 1.1;
+  margin-bottom: 16px; letter-spacing: 1px;
+}
+.hero h1 .accent { color: var(--accent); }
+.hero p { color: var(--muted); font-size: 1.05rem; max-width: 520px; margin: 0 auto 36px; line-height: 1.7; }
+.hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  color: #000; border: none; border-radius: 8px;
+  padding: 13px 28px; font-weight: 700; font-size: .95rem; cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  font-family: 'Rajdhani', sans-serif; letter-spacing: 1px;
+  text-decoration: none; display: inline-block;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,212,255,.3); }
+.btn-ghost {
+  background: transparent; color: var(--text); border: 1px solid var(--border);
+  border-radius: 8px; padding: 13px 28px; font-size: .95rem; cursor: pointer;
+  transition: all .2s; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px;
+  text-decoration: none; display: inline-block;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ══════════════════════════════════════════════
+   STATS
+══════════════════════════════════════════════ */
+.stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; margin-bottom: 60px;
+}
+.stat-item { background: var(--card); padding: 24px; text-align: center; }
+.stat-item a { transition: transform .2s; display: block; }
+.stat-item a:hover { transform: scale(1.05); }
+.stat-item .num { font-family: 'Rajdhani', sans-serif; font-size: 2rem; font-weight: 700; color: var(--accent); }
+.stat-item .label { font-size: .8rem; color: var(--muted); margin-top: 4px; }
+
+/* ══════════════════════════════════════════════
+   SECTIONS
+══════════════════════════════════════════════ */
+section { padding: 60px 0; }
+.section-tag {
+  font-size: .75rem; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 8px;
+}
+h2 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700;
+  margin-bottom: 8px; letter-spacing: 1px;
+}
+.section-desc { color: var(--muted); margin-bottom: 40px; line-height: 1.7; }
+
+/* ══════════════════════════════════════════════
+   AUTH WALL
+══════════════════════════════════════════════ */
+#authWall {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 48px 32px;
+  text-align: center; margin-bottom: 32px;
+}
+#authWall .icon { font-size: 3rem; margin-bottom: 16px; }
+#authWall h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin-bottom: 8px; }
+#authWall p { color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+.discord-btn {
+  background: linear-gradient(135deg, #5865f2, #4752c4);
+  border: none; border-radius: 10px; padding: 14px 32px; color: #fff;
+  font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700;
+  letter-spacing: 1px; cursor: pointer; transition: transform .15s, box-shadow .15s;
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.discord-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(88,101,242,.4); }
+
+/* ══════════════════════════════════════════════
+   TABS & FORMS
+══════════════════════════════════════════════ */
+.tabs { display: flex; gap: 4px; margin-bottom: 32px; border-bottom: 1px solid var(--border); }
+.tab-btn {
+  background: none; border: none; color: var(--muted);
+  padding: 12px 20px; cursor: pointer; font-size: .9rem;
+  font-family: 'Inter', sans-serif;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all .2s;
+}
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-btn:hover:not(.active) { color: var(--text); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.form-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px;
+}
+.form-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
+}
+.form-header .avatar { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--accent); }
+.form-header .info .name { font-weight: 600; font-size: 1rem; }
+.form-header .info .tag { font-size: .8rem; color: var(--accent); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+label { font-size: .8rem; color: var(--muted); letter-spacing: .5px; text-transform: uppercase; }
+input, textarea, select {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 11px 14px;
+  color: var(--text); font-family: 'Inter', sans-serif; font-size: .9rem;
+  transition: border-color .2s; width: 100%;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(0,212,255,.1);
+}
+input[readonly] { background: var(--bg2); color: var(--accent); cursor: default; }
+textarea { resize: vertical; min-height: 90px; }
+select option { background: var(--bg3); }
+.hint { font-size: .75rem; color: var(--muted); }
+.submit-btn {
+  width: 100%; margin-top: 24px;
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  border: none; border-radius: 8px; padding: 14px;
+  color: #000; font-family: 'Rajdhani', sans-serif;
+  font-size: 1.05rem; font-weight: 700; letter-spacing: 1px;
+  cursor: pointer; transition: transform .15s, box-shadow .15s, opacity .2s;
+}
+.submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,212,255,.3); }
+.submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+.submit-btn.curator-btn {
+  background: linear-gradient(135deg, var(--accent2), #5b21b6); color: #fff;
+}
+.submit-btn.curator-btn:hover:not(:disabled) { box-shadow: 0 8px 30px rgba(124,58,237,.4); }
+.alert {
+  border-radius: 8px; padding: 12px 16px; margin-top: 16px;
+  font-size: .88rem; display: none;
+}
+.alert.success { background: rgba(0,255,136,.08); border: 1px solid rgba(0,255,136,.3); color: var(--green); }
+.alert.error   { background: rgba(255,68,68,.08);  border: 1px solid rgba(255,68,68,.3);  color: var(--red); }
+.alert.show { display: block; }
+
+/* ══════════════════════════════════════════════
+   RULES
+══════════════════════════════════════════════ */
+.rules-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.rules-section-title {
+  background: rgba(0,212,255,.06); border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700;
+  color: var(--accent); letter-spacing: 1px;
+}
+.rule-item {
+  display: flex; gap: 16px; padding: 16px 24px;
+  border-bottom: 1px solid var(--border); transition: background .15s;
+}
+.rule-item:last-child { border-bottom: none; }
+.rule-item:hover { background: rgba(255,255,255,.02); }
+.rule-num { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--accent); min-width: 36px; line-height: 1.4; }
+.rule-item .rule-body h4 { font-size: .92rem; font-weight: 600; margin-bottom: 3px; }
+.rule-item .rule-body p  { font-size: .83rem; color: var(--muted); line-height: 1.5; }
+.rules-note {
+  background: rgba(255,204,0,.06); border: 1px solid rgba(255,204,0,.2);
+  border-radius: 10px; padding: 16px 20px; margin-top: 20px;
+  font-size: .85rem; color: var(--yellow); line-height: 1.6;
+}
+
+/* ══════════════════════════════════════════════
+   MOD PANEL
+══════════════════════════════════════════════ */
+.mod-auth-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px; text-align: center;
+}
+.mod-auth-card h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin-bottom: 8px; }
+.mod-auth-card p { color: var(--muted); margin-bottom: 24px; }
+#modPanel { display: none; }
+.mod-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+}
+.mod-user { display: flex; align-items: center; gap: 10px; }
+.mod-user img { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--accent2); }
+.mod-user .n { font-weight: 600; }
+.mod-user .r { font-size: .78rem; color: var(--accent2); }
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.filter-select {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: .85rem; cursor: pointer;
+}
+.apps-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.apps-table th {
+  text-align: left; padding: 10px 12px;
+  color: var(--muted); font-size: .75rem; letter-spacing: .5px;
+  text-transform: uppercase; border-bottom: 1px solid var(--border);
+}
+.apps-table td { padding: 12px; border-bottom: 1px solid rgba(30,45,61,.5); vertical-align: middle; }
+.apps-table tr:hover td { background: rgba(255,255,255,.02); }
+.status-badge { padding: 3px 10px; border-radius: 12px; font-size: .75rem; font-weight: 600; }
+.status-pending  { background: rgba(255,204,0,.1);  color: var(--yellow); border: 1px solid rgba(255,204,0,.3); }
+.status-approved { background: rgba(0,255,136,.1);  color: var(--green);  border: 1px solid rgba(0,255,136,.3); }
+.status-rejected { background: rgba(255,68,68,.1);  color: var(--red);    border: 1px solid rgba(255,68,68,.3); }
+.app-action-btn {
+  border: none; border-radius: 6px; padding: 5px 12px;
+  font-size: .78rem; font-weight: 600; cursor: pointer; transition: opacity .15s;
+}
+.app-action-btn:hover { opacity: .8; }
+.btn-approve { background: rgba(0,255,136,.15); color: var(--green); border: 1px solid rgba(0,255,136,.3); }
+.btn-reject  { background: rgba(255,68,68,.15);  color: var(--red);   border: 1px solid rgba(255,68,68,.3); }
+.pagination { display: flex; gap: 6px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
+.page-btn {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px 12px; color: var(--text);
+  cursor: pointer; font-size: .85rem; transition: all .2s;
+}
+.page-btn:hover { border-color: var(--accent); color: var(--accent); }
+.page-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+.empty-state { text-align: center; padding: 48px; color: var(--muted); }
+.logout-sm {
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px 12px; color: var(--muted);
+  cursor: pointer; font-size: .8rem; transition: all .2s;
+}
+.logout-sm:hover { border-color: var(--red); color: var(--red); }
+
+/* ══════════════════════════════════════════════
+   CHAT
+══════════════════════════════════════════════ */
+.chat-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.chat-msgs {
+  height: 340px; overflow-y: auto; padding: 20px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.chat-msgs::-webkit-scrollbar { width: 4px; }
+.chat-msgs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.msg { max-width: 80%; }
+.msg.user { align-self: flex-end; }
+.msg.bot  { align-self: flex-start; }
+.msg-bubble { padding: 10px 14px; border-radius: 12px; font-size: .88rem; line-height: 1.5; }
+.msg.user .msg-bubble {
+  background: linear-gradient(135deg, rgba(0,212,255,.2), rgba(0,153,204,.15));
+  border: 1px solid rgba(0,212,255,.25); color: var(--text); border-bottom-right-radius: 4px;
+}
+.msg.bot .msg-bubble {
+  background: var(--bg3); border: 1px solid var(--border); border-bottom-left-radius: 4px;
+}
+.chat-input-row { display: flex; gap: 8px; padding: 16px; border-top: 1px solid var(--border); }
+.chat-input-row input { flex: 1; }
+.chat-send {
+  background: var(--accent); border: none; border-radius: 8px;
+  padding: 10px 18px; color: #000; font-weight: 700;
+  cursor: pointer; font-size: .85rem; transition: opacity .2s; white-space: nowrap;
+}
+.chat-send:hover { opacity: .85; }
+.typing { color: var(--muted); font-size: .8rem; padding: 0 20px 8px; }
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border); padding: 32px 0;
+  text-align: center; color: var(--muted); font-size: .85rem; margin-top: 60px;
+}
+footer a { color: var(--accent); text-decoration: none; }
+
+/* ══════════════════════════════════════════════
+   ANIMATIONS & UTILS
+══════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up   { animation: fadeUp .5s ease both; }
+.fade-up-2 { animation: fadeUp .5s .1s ease both; }
+.fade-up-3 { animation: fadeUp .5s .2s ease both; }
+
+.spinner {
+  width: 18px; height: 18px; border: 2px solid rgba(0,0,0,.3);
+  border-top-color: #000; border-radius: 50%;
+  animation: spin .6s linear infinite; display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .stats     { grid-template-columns: 1fr; }
+  .hero      { padding: 50px 0 40px; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="inner">
+    <a class="logo" href="#">PETUSHARA<span>TEAM</span></a>
+    <div class="nav-links">
+      <a href="#apply">Вступить</a>
+      <a href="#rules">Правила</a>
+      <a href="#mod">Модератор</a>
+      <a href="#chat">AI Чат</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-btn" onclick="toggleTheme()" title="Сменить тему">🌙</button>
+      <div id="playerAuthArea">
+        <button id="loginBtn" onclick="startPlayerLogin()">
+          <svg width="18" height="14" viewBox="0 0 24 18" fill="currentColor">
+            <path d="M20.317 1.492a19.84 19.84 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 1.492a.07.07 0 0 0-.032.027C.533 6.093-.32 10.555.099 14.961a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+          </svg>
+          Войти через Discord
+        </button>
+        <div id="userBadge">
+          <img id="userAvatar" src="" alt="">
+          <span class="uname" id="userName"></span>
+          <button class="logout-link" onclick="playerLogout()">Выйти</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<div class="container">
+  <div class="hero fade-up">
+    <div class="hero-tag">🎮 Игровое сообщество</div>
+    <h1>Вступи в<br><span class="accent">Petushara Team</span></h1>
+    <p>Крутые игры, живая атмосфера и настоящие товарищи по команде. Подай заявку прямо сейчас.</p>
+    <div class="hero-btns">
+      <a href="#apply" class="btn-primary">Подать заявку</a>
+      <a href="#rules" class="btn-ghost">Правила сервера</a>
+    </div>
+  </div>
+
+  <div class="stats fade-up-2">
+    <div class="stat-item"><div class="num">24/7</div><div class="label">Онлайн</div></div>
+    <div class="stat-item">
+      <a href="https://discord.gg/ghjHB8U3" target="_blank" rel="noopener" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:6px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <svg width="28" height="22" viewBox="0 0 24 18" fill="#5865f2"><path d="M20.317 1.492a19.84 19.84 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 1.492a.07.07 0 0 0-.032.027C.533 6.093-.32 10.555.099 14.961a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          <span style="font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;color:#5865f2">Вступить</span>
+        </div>
+        <span style="font-size:.8rem;color:var(--muted)">Перейти на сервер Discord</span>
+      </a>
+    </div>
+    <div class="stat-item"><div class="num">20+</div><div class="label">Активных игр</div></div>
+  </div>
+</div>
+
+<!-- ══ APPLY ══ -->
+<section id="apply">
+  <div class="container fade-up-3">
+    <div class="section-tag">Заявка на вступление</div>
+    <h2>Стать частью сервера</h2>
+    <p class="section-desc">
+      Заполни форму — модераторы рассмотрят заявку в течение 24 часов.<br>
+      <strong style="color:var(--accent)">Требуется авторизация через Discord</strong> — это защищает от фейков.
+    </p>
+
+    <!-- AUTH WALL -->
+    <div id="authWall">
+      <div class="icon">🔐</div>
+      <h3>Авторизуйтесь через Discord</h3>
+      <p>Войдите через Discord, чтобы подать заявку. Никто не сможет подать её от вашего имени.</p>
+      <button class="discord-btn" onclick="startPlayerLogin()">
+        <svg width="20" height="15" viewBox="0 0 24 18" fill="currentColor"><path d="M20.317 1.492a19.84 19.84 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 1.492a.07.07 0 0 0-.032.027C.533 6.093-.32 10.555.099 14.961a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Войти через Discord
+      </button>
+    </div>
+
+    <!-- FORMS -->
+    <div id="formsArea" style="display:none">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('member',this)">👤 Участник</button>
+        <button class="tab-btn" onclick="switchTab('curator',this)">🎯 Куратор</button>
+        <button class="tab-btn" onclick="switchTab('moderator',this)">🛡️ Модератор</button>
+      </div>
+
+      <!-- MEMBER -->
+      <div id="tab-member" class="tab-panel active">
+        <div class="form-card">
+          <div class="form-header">
+            <img class="avatar" id="formAvatar" src="" alt="">
+            <div class="info">
+              <div class="name" id="formName"></div>
+              <div class="tag">✅ Авторизован через Discord</div>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Discord аккаунт</label>
+              <input type="text" id="memberDiscord" readonly>
+              <span class="hint">Из вашего аккаунта</span>
+            </div>
+            <div class="form-group">
+              <label>Возраст *</label>
+              <input type="number" id="memberAge" placeholder="18" min="10" max="99">
+            </div>
+            <div class="form-group full">
+              <label>Как вас зовут? *</label>
+              <input type="text" id="memberName" placeholder="Имя или псевдоним">
+            </div>
+            <div class="form-group full">
+              <label>Ваша активность *</label>
+              <input type="text" id="memberActivity" placeholder="Например: каждый вечер 18:00–23:00">
+            </div>
+            <div class="form-group full">
+              <label>В какие игры играете?</label>
+              <input type="text" id="memberGames" placeholder="CS2, Minecraft, Valorant...">
+            </div>
+            <div class="form-group full">
+              <label>Принимаете правила сервера? *</label>
+              <select id="memberRules">
+                <option value="">— выберите —</option>
+                <option value="true">✅ Да, принимаю правила</option>
+                <option value="false">❌ Нет</option>
+              </select>
+            </div>
+          </div>
+          <button class="submit-btn" id="memberSubmitBtn" onclick="submitMember()">Отправить заявку</button>
+          <div class="alert" id="memberAlert"></div>
+        </div>
+      </div>
+
+      <!-- CURATOR -->
+      <div id="tab-curator" class="tab-panel">
+        <div class="form-card">
+          <div class="form-header">
+            <img class="avatar" id="curatorFormAvatar" src="" alt="">
+            <div class="info">
+              <div class="name" id="curatorFormName"></div>
+              <div class="tag" style="color:var(--accent2)">✅ Авторизован через Discord</div>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Discord аккаунт</label>
+              <input type="text" id="curatorDiscord" readonly>
+            </div>
+            <div class="form-group">
+              <label>Возраст *</label>
+              <input type="number" id="curatorAge" placeholder="18" min="10" max="99">
+            </div>
+            <div class="form-group full">
+              <label>Имя *</label>
+              <input type="text" id="curatorName" placeholder="Ваше имя">
+            </div>
+            <div class="form-group full">
+              <label>Активность *</label>
+              <input type="text" id="curatorActivity" placeholder="Когда вы онлайн">
+            </div>
+            <div class="form-group full">
+              <label>Игры</label>
+              <input type="text" id="curatorGames" placeholder="Любимые игры">
+            </div>
+            <div class="form-group full">
+              <label>Ваш опыт *</label>
+              <textarea id="curatorExperience" placeholder="Опыт модерации, работы с людьми, управления сообществами..."></textarea>
+            </div>
+            <div class="form-group full">
+              <label>Почему хотите стать куратором? *</label>
+              <textarea id="curatorMotivation" placeholder="Расскажите о своей мотивации..."></textarea>
+            </div>
+            <div class="form-group full">
+              <label>Принимаете правила? *</label>
+              <select id="curatorRules">
+                <option value="">— выберите —</option>
+                <option value="true">✅ Да, принимаю правила</option>
+                <option value="false">❌ Нет</option>
+              </select>
+            </div>
+          </div>
+          <button class="submit-btn curator-btn" id="curatorSubmitBtn" onclick="submitCurator()">Отправить заявку куратора</button>
+          <div class="alert" id="curatorAlert"></div>
+        </div>
+      </div>
+
+      <!-- MODERATOR -->
+      <div id="tab-moderator" class="tab-panel">
+        <div class="form-card">
+          <div class="form-header">
+            <img class="avatar" id="modFormAvatar" src="" alt="">
+            <div class="info">
+              <div class="name" id="modFormName"></div>
+              <div class="tag" style="color:#ff8800">⚡ Заявка на модератора</div>
+            </div>
+          </div>
+
+          <div style="background:rgba(255,136,0,.06);border:1px solid rgba(255,136,0,.2);border-radius:10px;padding:14px 18px;margin-bottom:24px;font-size:.85rem;line-height:1.7;color:#b45309">
+            ⚠️ <strong>Важно:</strong> Модератор — это ответственная роль. Мы ожидаем зрелого подхода, умения разрешать конфликты и готовности посвящать время сообществу. Заявка рассматривается администрацией лично.
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Discord аккаунт</label>
+              <input type="text" id="modAppDiscord" readonly>
+            </div>
+            <div class="form-group">
+              <label>Возраст *</label>
+              <input type="number" id="modAppAge" placeholder="18" min="14" max="99">
+            </div>
+            <div class="form-group full">
+              <label>Имя / псевдоним *</label>
+              <input type="text" id="modAppName" placeholder="Как вас называть">
+            </div>
+            <div class="form-group full">
+              <label>Часовой пояс и онлайн *</label>
+              <input type="text" id="modAppTimezone" placeholder="МСК+0, онлайн каждый день 19:00–00:00">
+            </div>
+            <div class="form-group full">
+              <label>Сколько часов в день готовы уделять серверу? *</label>
+              <input type="text" id="modAppHours" placeholder="Например: 2–4 часа">
+            </div>
+            <div class="form-group full">
+              <label>Опыт модерации *</label>
+              <textarea id="modAppExperience" placeholder="Опишите опыт: какие серверы модерировали, сколько участников, какие инструменты использовали. Если опыта нет — напишите об этом честно."></textarea>
+            </div>
+            <div class="form-group full">
+              <label>Как вы поступите в конфликтной ситуации? *</label>
+              <textarea id="modAppConflict" placeholder="Например: два участника оскорбляют друг друга в общем чате. Ваши действия?"></textarea>
+            </div>
+            <div class="form-group full">
+              <label>Почему хотите стать модератором? *</label>
+              <textarea id="modAppMotivation" placeholder="Расскажите честно — что вас привлекает в этой роли и что вы готовы дать сообществу."></textarea>
+            </div>
+            <div class="form-group full">
+              <label>Есть ли у вас Discord Nitro / буст сервера?</label>
+              <select id="modAppNitro">
+                <option value="">— выберите —</option>
+                <option value="nitro">Есть Nitro</option>
+                <option value="boost">Бустю сервер</option>
+                <option value="both">Nitro + бустю</option>
+                <option value="none">Нет</option>
+              </select>
+              <span class="hint">Не обязательно — просто для информации.</span>
+            </div>
+            <div class="form-group full">
+              <label>Принимаете правила и обязанности модератора? *</label>
+              <select id="modAppRules">
+                <option value="">— выберите —</option>
+                <option value="true">✅ Да, принимаю и готов нести ответственность</option>
+                <option value="false">❌ Нет</option>
+              </select>
+            </div>
+          </div>
+          <button class="submit-btn" id="modAppSubmitBtn" onclick="submitModerator()" style="background:linear-gradient(135deg,#ff8800,#cc6600);color:#fff">
+            Отправить заявку на модератора
+          </button>
+          <div class="alert" id="modAppAlert"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ RULES ══ -->
+<section id="rules">
+  <div class="container">
+    <div class="section-tag">Правила</div>
+    <h2>Правила сервера</h2>
+    <p class="section-desc">Ознакомьтесь с правилами сервера. Незнание правил не освобождает от ответственности.</p>
+
+    <div class="rules-card">
+      <div class="rules-section-title">§1 — Общие правила</div>
+
+      <div class="rule-item"><div class="rule-num">1.1</div><div class="rule-body"><h4>Нецензурная лексика</h4><p>Мат разрешён в неоскорбительном контексте. Злоупотребление наказывается. Запрещены ники/аватары с нецензурными словами.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.2</div><div class="rule-body"><h4>Флуд</h4><p>Запрещено писать бессмысленную или малосодержательную информацию, не несущую смысловой нагрузки.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.3</div><div class="rule-body"><h4>Флуд эмодзи</h4><p>Запрещено флудить смайликами и эмодзи.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.4</div><div class="rule-body"><h4>Форматирование</h4><p>Запрещены сообщения сплошными заглавными буквами, жирным, курсивом или подчёркиванием — если такого текста более трети сообщения.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.5</div><div class="rule-body"><h4>Критика администрации</h4><p>Запрещено публично обсуждать и осуждать действия администрации. При несогласии — тикет.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.6</div><div class="rule-body"><h4>Транслит</h4><p>Русский текст должен быть написан кириллицей. Используйте переводчик транслита при необходимости.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.7</div><div class="rule-body"><h4>Коверканный язык</h4><p>Запрещено чрезмерное использование сленга, жаргонизмов и коверканного языка.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.8</div><div class="rule-body"><h4>Насилие и экстремизм</h4><p>Запрещена публикация материалов жестокого, насильственного, экстремистского характера и призывы к таковым.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.9</div><div class="rule-body"><h4>Оскорбления</h4><p>Запрещено оскорблять пользователей и администрацию — прямым или косвенным образом, в том числе через сарказм и инсинуации.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.10</div><div class="rule-body"><h4>Дискриминация</h4><p>Запрещена дискриминация по любому признаку: расовому, национальному, половому, религиозному, возрастному, по инвалидности или сексуальной ориентации.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.11</div><div class="rule-body"><h4>Уничижительные определения</h4><p>Запрещено употребление уничижительных обозначений национальностей и народов («пиндосы», «хохлы», «москали» и подобное).</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.12</div><div class="rule-body"><h4>Приватная переписка</h4><p>Запрещено цитировать личную переписку из привата или других каналов без явного согласия обеих сторон.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.13</div><div class="rule-body"><h4>Персональные данные</h4><p>Запрещено разглашать персональные данные (адреса, телефоны, email, финансовые данные, фото, профили в соцсетях и т. п.).</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.14</div><div class="rule-body"><h4>Обсуждение модерации</h4><p>Запрещено публично осуждать действия модераторов и администраторов. Обращайтесь напрямую к администратору.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.15</div><div class="rule-body"><h4>Призывы к суициду</h4><p>Запрещена публикация любых сообщений, призывающих к суициду или самоповреждению.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.16</div><div class="rule-body"><h4>CAPS LOCK</h4><p>Запрещено использование клавиши Caps Lock без необходимости.</p></div></div>
+      <div class="rule-item"><div class="rule-num">1.17</div><div class="rule-body"><h4>Музыкальный бот</h4><p>Запрещено переводить музыкального бота в другие каналы без разрешения.</p></div></div>
+
+      <div class="rules-section-title">§2 — Ники</div>
+      <div class="rule-item"><div class="rule-num">2.1</div><div class="rule-body"><h4>Читаемость</h4><p>Запрещены бессмысленные и нечитаемые ники (например: «asd», «123», «sfkwerqeq1»).</p></div></div>
+      <div class="rule-item"><div class="rule-num">2.2</div><div class="rule-body"><h4>Оскорбительные ники</h4><p>Запрещены ники, которые могут оскорбить другого человека.</p></div></div>
+      <div class="rule-item"><div class="rule-num">2.3</div><div class="rule-body"><h4>Нецензурные ники</h4><p>Запрещены ники, содержащие нецензурную лексику.</p></div></div>
+      <div class="rule-item"><div class="rule-num">2.4</div><div class="rule-body"><h4>Контактная информация в нике</h4><p>Запрещено использовать в никах адреса сайтов, email и прочую контактную информацию.</p></div></div>
+      <div class="rule-item"><div class="rule-num">2.5</div><div class="rule-body"><h4>Копирование ника</h4><p>Запрещено использовать визуально похожий двойник уже существующего ника.</p></div></div>
+
+      <div class="rules-section-title">§3 — Наказания</div>
+      <div class="rule-item"><div class="rule-num">3.1</div><div class="rule-body"><h4>Твинк-аккаунты</h4><p>Приглашение твинк-аккаунтов — перманентный бан твинка.</p></div></div>
+      <div class="rule-item"><div class="rule-num">3.2</div><div class="rule-body"><h4>Рецидив</h4><p>Повторные нарушения — бан на сутки.</p></div></div>
+      <div class="rule-item"><div class="rule-num">3.3</div><div class="rule-body"><h4>Накрутка уровня</h4><p>Накрутка уровня карается обнулением уровня. При повторных действиях — бан.</p></div></div>
+    </div>
+
+    <div class="rules-note">
+      ⚠️ <strong>Важно:</strong> Администрация вправе в любой момент без объяснения причин прекратить доступ к серверу. Правила могут изменяться без предупреждения. Ваш аккаунт отвечает за все нарушения, совершённые с него.
+    </div>
+  </div>
+</section>
+
+<!-- ══ MOD PANEL ══ -->
+<section id="mod">
+  <div class="container">
+    <div class="section-tag">Модерация</div>
+    <h2>Панель модератора</h2>
+    <p class="section-desc">Доступна только пользователям с ролью модератора на сервере.</p>
+
+    <div id="modArea">
+      <div class="mod-auth-card" id="modLoginCard">
+        <h3>🛡️ Вход для модераторов</h3>
+        <p>Авторизуйтесь через Discord. Доступ — только при наличии роли модератора.</p>
+        <button class="discord-btn" onclick="startModLogin()">
+          <svg width="18" height="14" viewBox="0 0 24 18" fill="currentColor"><path d="M20.317 1.492a19.84 19.84 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 1.492a.07.07 0 0 0-.032.027C.533 6.093-.32 10.555.099 14.961a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          Войти как модератор
+        </button>
+      </div>
+
+      <div id="modPanel">
+        <div class="mod-header">
+          <div class="mod-user">
+            <img id="modAvatar" src="" alt="">
+            <div>
+              <div class="n" id="modName"></div>
+              <div class="r">🛡️ Модератор</div>
+            </div>
+          </div>
+          <button class="logout-sm" onclick="modLogout()">Выйти</button>
+        </div>
+
+        <div class="filter-bar">
+          <select class="filter-select" id="filterStatus" onchange="loadApplications(1)">
+            <option value="all">Все статусы</option>
+            <option value="pending">В ожидании</option>
+            <option value="approved">Одобрены</option>
+            <option value="rejected">Отклонены</option>
+          </select>
+          <select class="filter-select" id="filterType" onchange="loadApplications(1)">
+            <option value="all">Все типы</option>
+            <option value="member">Участники</option>
+            <option value="curator">Кураторы</option>
+            <option value="moderator">Модераторы</option>
+          </select>
+        </div>
+
+        <div style="overflow-x:auto">
+          <table class="apps-table">
+            <thead>
+              <tr>
+                <th>ID</th><th>Тип</th><th>Discord</th><th>Имя</th>
+                <th>Возраст</th><th>Дата</th><th>Статус</th><th>Действие</th>
+              </tr>
+            </thead>
+            <tbody id="appsTableBody"></tbody>
+          </table>
+        </div>
+        <div id="appsPagination" class="pagination"></div>
+        <div id="appsEmpty" class="empty-state" style="display:none">Заявок нет</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ AI CHAT ══ -->
+<section id="chat">
+  <div class="container">
+    <div class="section-tag">AI Помощник</div>
+    <h2>Чат с ботом</h2>
+    <p class="section-desc">Задайте вопросы о правилах, заявках или сервере. Powered by Claude AI.</p>
+    <div class="chat-wrap">
+      <div class="chat-msgs" id="chatMsgs">
+        <div class="msg bot">
+          <div class="msg-bubble">👋 Привет! Я AI-помощник сервера Petushara Team. Расскажу о правилах, процессе вступления или командах бота. Чем помогу?</div>
+        </div>
+      </div>
+      <div class="typing" id="typingIndicator" style="display:none">⌛ Печатает...</div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Написать сообщение..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">Отправить</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Petushara Team. Все права защищены. · <a href="#rules">Правила</a> · <a href="#apply">Вступить</a></p>
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+let playerSession = null; // { id, discord_id, discord_username, discord_avatar }
+let modSession    = null;
+let chatHistory   = [];
+
+// ═══════════════════════════════════════════════
+//  THEME
+// ═══════════════════════════════════════════════
+function toggleTheme() {
+  const html = document.documentElement;
+  const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  html.dataset.theme = next;
+  document.querySelector('.theme-btn').textContent = next === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('theme', next);
+}
+(function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.dataset.theme = saved;
+  document.querySelector('.theme-btn').textContent = saved === 'dark' ? '🌙' : '☀️';
+})();
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(location.search);
+
+  if (params.get('player_session')) {
+    const sid = params.get('player_session');
+    localStorage.setItem('playerSession', sid);
+    cleanUrl();
+    await verifyPlayerSession(sid);
+  } else {
+    const saved = localStorage.getItem('playerSession');
+    if (saved) await verifyPlayerSession(saved);
+  }
+
+  if (params.get('mod_session')) {
+    const sid = params.get('mod_session');
+    localStorage.setItem('modSession', sid);
+    cleanUrl();
+    await verifyModSession(sid);
+  } else {
+    const saved = localStorage.getItem('modSession');
+    if (saved) await verifyModSession(saved);
+  }
+
+  if (params.get('player_error')) {
+    alert('Ошибка авторизации: ' + params.get('player_error'));
+    cleanUrl();
+  }
+  if (params.get('mod_error')) {
+    alert('Ошибка авторизации модератора: ' + params.get('mod_error'));
+    cleanUrl();
+  }
+
+  renderModSection();
+});
+
+function cleanUrl() { history.replaceState({}, '', location.pathname); }
+
+// ═══════════════════════════════════════════════
+//  PLAYER AUTH
+// ═══════════════════════════════════════════════
+async function startPlayerLogin() {
+  try {
+    const r = await fetch('/api/player/auth');
+    const data = await r.json();
+    if (data.url) location.href = data.url;
+  } catch { alert('Ошибка запуска авторизации'); }
+}
+
+async function verifyPlayerSession(sid) {
+  try {
+    const r = await fetch('/api/player/verify', { headers: { 'x-player-session': sid } });
+    if (!r.ok) { localStorage.removeItem('playerSession'); return; }
+    const data = await r.json();
+    if (data.authorized) {
+      playerSession = { id: sid, ...data };
+      showPlayerLoggedIn();
+    } else {
+      localStorage.removeItem('playerSession');
+    }
+  } catch { localStorage.removeItem('playerSession'); }
+}
+
+function showPlayerLoggedIn() {
+  document.getElementById('loginBtn').style.display = 'none';
+  const badge = document.getElementById('userBadge');
+  badge.style.display = 'flex';
+  document.getElementById('userAvatar').src = playerSession.discord_avatar || '';
+  document.getElementById('userName').textContent = '@' + playerSession.discord_username;
+
+  document.getElementById('authWall').style.display = 'none';
+  document.getElementById('formsArea').style.display = 'block';
+
+  const uname = '@' + playerSession.discord_username;
+  document.getElementById('memberDiscord').value = uname;
+  document.getElementById('curatorDiscord').value = uname;
+  document.getElementById('formAvatar').src = playerSession.discord_avatar || '';
+  document.getElementById('formName').textContent = playerSession.discord_username;
+  document.getElementById('curatorFormAvatar').src = playerSession.discord_avatar || '';
+  document.getElementById('curatorFormName').textContent = playerSession.discord_username;
+  document.getElementById('modFormAvatar').src = playerSession.discord_avatar || '';
+  document.getElementById('modFormName').textContent = playerSession.discord_username;
+  document.getElementById('modAppDiscord').value = uname;
+}
+
+async function playerLogout() {
+  const sid = localStorage.getItem('playerSession');
+  if (sid) {
+    await fetch('/api/player/logout', { method: 'POST', headers: { 'x-player-session': sid } });
+    localStorage.removeItem('playerSession');
+  }
+  playerSession = null;
+  document.getElementById('loginBtn').style.display = '';
+  document.getElementById('userBadge').style.display = 'none';
+  document.getElementById('authWall').style.display = '';
+  document.getElementById('formsArea').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+//  SUBMIT MEMBER
+// ═══════════════════════════════════════════════
+async function submitMember() {
+  if (!playerSession) { alert('Войдите через Discord'); return; }
+
+  const age      = document.getElementById('memberAge').value.trim();
+  const name     = document.getElementById('memberName').value.trim();
+  const activity = document.getElementById('memberActivity').value.trim();
+  const games    = document.getElementById('memberGames').value.trim();
+  const rules    = document.getElementById('memberRules').value;
+
+  if (!age || !name || !activity || !rules) {
+    showAlert('memberAlert', 'error', 'Заполните все обязательные поля.');
+    return;
+  }
+  if (rules === 'false') {
+    showAlert('memberAlert', 'error', 'Вы должны принять правила сервера.');
+    return;
+  }
+
+  const btn = document.getElementById('memberSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Отправка...';
+
+  try {
+    const r = await fetch('/api/applications', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-player-session': playerSession.id },
+      body: JSON.stringify({ age, name, activity, games, rules: rules === 'true' }),
+    });
+    const data = await r.json();
+    if (r.ok && data.success) {
+      showAlert('memberAlert', 'success', '✅ Заявка отправлена! Ожидайте решения модератора.');
+      ['memberAge','memberName','memberActivity','memberGames'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('memberRules').value = '';
+    } else {
+      showAlert('memberAlert', 'error', data.error || 'Ошибка отправки заявки.');
+    }
+  } catch { showAlert('memberAlert', 'error', 'Ошибка сети. Попробуйте позже.'); }
+  finally {
+    btn.disabled = false;
+    btn.textContent = 'Отправить заявку';
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  SUBMIT CURATOR
+// ═══════════════════════════════════════════════
+async function submitCurator() {
+  if (!playerSession) { alert('Войдите через Discord'); return; }
+
+  const age        = document.getElementById('curatorAge').value.trim();
+  const name       = document.getElementById('curatorName').value.trim();
+  const activity   = document.getElementById('curatorActivity').value.trim();
+  const games      = document.getElementById('curatorGames').value.trim();
+  const experience = document.getElementById('curatorExperience').value.trim();
+  const motivation = document.getElementById('curatorMotivation').value.trim();
+  const rules      = document.getElementById('curatorRules').value;
+
+  if (!age || !name || !activity || !experience || !motivation || !rules) {
+    showAlert('curatorAlert', 'error', 'Заполните все обязательные поля.');
+    return;
+  }
+  if (rules === 'false') {
+    showAlert('curatorAlert', 'error', 'Вы должны принять правила сервера.');
+    return;
+  }
+
+  const btn = document.getElementById('curatorSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Отправка...';
+
+  try {
+    const r = await fetch('/api/curator', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-player-session': playerSession.id },
+      body: JSON.stringify({ age, name, activity, games, experience, motivation, rules: rules === 'true' }),
+    });
+    const data = await r.json();
+    if (r.ok && data.success) {
+      showAlert('curatorAlert', 'success', '✅ Заявка куратора отправлена! Ожидайте решения.');
+    } else {
+      showAlert('curatorAlert', 'error', data.error || 'Ошибка отправки заявки.');
+    }
+  } catch { showAlert('curatorAlert', 'error', 'Ошибка сети.'); }
+  finally {
+    btn.disabled = false;
+    btn.textContent = 'Отправить заявку куратора';
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  SUBMIT MODERATOR
+// ═══════════════════════════════════════════════
+async function submitModerator() {
+  if (!playerSession) { alert('Войдите через Discord'); return; }
+
+  const age        = document.getElementById('modAppAge').value.trim();
+  const name       = document.getElementById('modAppName').value.trim();
+  const timezone   = document.getElementById('modAppTimezone').value.trim();
+  const hours      = document.getElementById('modAppHours').value.trim();
+  const experience = document.getElementById('modAppExperience').value.trim();
+  const conflict   = document.getElementById('modAppConflict').value.trim();
+  const motivation = document.getElementById('modAppMotivation').value.trim();
+  const nitro      = document.getElementById('modAppNitro').value;
+  const rules      = document.getElementById('modAppRules').value;
+
+  if (!age || !name || !timezone || !hours || !experience || !conflict || !motivation || !rules) {
+    showAlert('modAppAlert', 'error', 'Заполните все обязательные поля.');
+    return;
+  }
+  if (rules === 'false') {
+    showAlert('modAppAlert', 'error', 'Вы должны принять правила и обязанности модератора.');
+    return;
+  }
+
+  const btn = document.getElementById('modAppSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Отправка...';
+
+  // Собираем мотивацию + доп. поля в одно поле experience для бэкенда
+  const fullExperience = `[ОПЫТ]: ${experience}\n\n[КОНФЛИКТ]: ${conflict}\n\n[ОНЛАЙН]: ${timezone} | ${hours} ч/день${nitro && nitro !== 'none' ? `\n\n[NITRO/BOOST]: ${nitro}` : ''}`;
+
+  try {
+    const r = await fetch('/api/curator', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-player-session': playerSession.id },
+      body: JSON.stringify({
+        age,
+        name,
+        activity: timezone + ' | ' + hours + ' ч/день',
+        games: '',
+        experience: fullExperience,
+        motivation,
+        rules: true,
+        type: 'moderator',
+      }),
+    });
+    const data = await r.json();
+    if (r.ok && data.success) {
+      showAlert('modAppAlert', 'success', '✅ Заявка на модератора отправлена! Администрация рассмотрит её лично.');
+      ['modAppAge','modAppName','modAppTimezone','modAppHours','modAppExperience','modAppConflict','modAppMotivation'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('modAppNitro').value = '';
+      document.getElementById('modAppRules').value = '';
+    } else {
+      showAlert('modAppAlert', 'error', data.error || 'Ошибка отправки заявки.');
+    }
+  } catch { showAlert('modAppAlert', 'error', 'Ошибка сети. Попробуйте позже.'); }
+  finally {
+    btn.disabled = false;
+    btn.textContent = 'Отправить заявку на модератора';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+async function startModLogin() {
+  try {
+    const r = await fetch('/api/moderator/auth/discord', { method: 'POST' });
+    const data = await r.json();
+    if (data.url) location.href = data.url;
+  } catch { alert('Ошибка авторизации'); }
+}
+
+async function verifyModSession(sid) {
+  try {
+    const r = await fetch('/api/moderator/verify', { headers: { 'x-mod-session': sid } });
+    const data = await r.json();
+    if (data.authorized && data.is_moderator) {
+      modSession = { id: sid, ...data };
+    } else {
+      localStorage.removeItem('modSession');
+      if (data.authorized && !data.is_moderator) {
+        alert('⚠️ Аккаунт Discord найден, но роль модератора не подтверждена.');
+      }
+    }
+  } catch { localStorage.removeItem('modSession'); }
+}
+
+async function modLogout() {
+  const sid = localStorage.getItem('modSession');
+  if (sid) {
+    await fetch('/api/moderator/logout', { method: 'POST', headers: { 'x-mod-session': sid } });
+    localStorage.removeItem('modSession');
+  }
+  modSession = null;
+  renderModSection();
+}
+
+function renderModSection() {
+  const area      = document.getElementById('modArea');
+  const loginCard = document.getElementById('modLoginCard');
+  const panel     = document.getElementById('modPanel');
+
+  area.style.display = 'block';
+
+  if (modSession) {
+    loginCard.style.display = 'none';
+    panel.style.display = 'block';
+    document.getElementById('modAvatar').src = modSession.discord_avatar || '';
+    document.getElementById('modName').textContent = '@' + modSession.discord_username;
+    loadApplications(1);
+  } else {
+    loginCard.style.display = '';
+    panel.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  MOD PANEL: APPLICATIONS
+// ═══════════════════════════════════════════════
+let currentPage = 1;
+
+async function loadApplications(page) {
+  if (!modSession) return;
+  currentPage = page;
+
+  const status = document.getElementById('filterStatus').value;
+  const type   = document.getElementById('filterType').value;
+
+  try {
+    const r = await fetch(`/api/moderator/applications?page=${page}&limit=15&status=${status}&type=${type}`, {
+      headers: { 'x-mod-session': modSession.id },
+    });
+    if (r.status === 401 || r.status === 403) { modLogout(); return; }
+    const data = await r.json();
+
+    const tbody = document.getElementById('appsTableBody');
+    const empty = document.getElementById('appsEmpty');
+
+    if (!data.applications?.length) {
+      tbody.innerHTML = '';
+      empty.style.display = '';
+    } else {
+      empty.style.display = 'none';
+      tbody.innerHTML = data.applications.map(app => `
+        <tr>
+          <td style="color:var(--muted)">#${app.id}</td>
+          <td>${app.type === 'member' ? '👤' : app.type === 'moderator' ? '🛡️' : '🎯'} ${app.type}</td>
+          <td style="color:var(--accent)">@${app.username || '—'}</td>
+          <td>${esc(app.name || '—')}</td>
+          <td>${app.age || '—'}</td>
+          <td style="color:var(--muted);font-size:.78rem">${new Date(app.created_at).toLocaleDateString('ru')}</td>
+          <td><span class="status-badge status-${app.status}">${statusLabel(app.status)}</span></td>
+          <td>
+            ${app.status === 'pending' ? `
+              <div style="display:flex;gap:6px">
+                <button class="app-action-btn btn-approve" onclick="decideApp(${app.id},'approve')">✅ Принять</button>
+                <button class="app-action-btn btn-reject"  onclick="decideApp(${app.id},'reject')">❌ Отклонить</button>
+              </div>` : `<span style="color:var(--muted);font-size:.78rem">${esc(app.decided_by || '—')}</span>`}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    const pag = document.getElementById('appsPagination');
+    pag.innerHTML = '';
+    for (let i = 1; i <= data.pages; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'page-btn' + (i === page ? ' active' : '');
+      btn.textContent = i;
+      btn.onclick = () => loadApplications(i);
+      pag.appendChild(btn);
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function decideApp(id, action) {
+  if (!modSession) return;
+  if (!confirm(action === 'approve' ? 'Одобрить заявку?' : 'Отклонить заявку?')) return;
+
+  try {
+    const r = await fetch(`/api/moderator/applications/${id}/decide`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-mod-session': modSession.id },
+      body: JSON.stringify({ action }),
+    });
+    const data = await r.json();
+    if (data.success) loadApplications(currentPage);
+    else alert(data.error || 'Ошибка');
+  } catch { alert('Ошибка сети'); }
+}
+
+function statusLabel(s) {
+  return s === 'pending' ? '⏳ Ожидание' : s === 'approved' ? '✅ Одобрена' : '❌ Отклонена';
+}
+
+// ═══════════════════════════════════════════════
+//  AI CHAT
+// ═══════════════════════════════════════════════
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text  = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  appendMsg('user', text);
+  chatHistory.push({ role: 'user', content: text });
+
+  const typing = document.getElementById('typingIndicator');
+  typing.style.display = '';
+
+  try {
+    const r = await fetch('/api/ai/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory }),
+    });
+    const data = await r.json();
+    const reply = data.reply || 'Нет ответа';
+    chatHistory.push({ role: 'assistant', content: reply });
+    appendMsg('bot', reply);
+  } catch { appendMsg('bot', '❌ Ошибка сети. Попробуйте позже.'); }
+  finally { typing.style.display = 'none'; }
+}
+
+function appendMsg(role, text) {
+  const msgs = document.getElementById('chatMsgs');
+  const div  = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.innerHTML = `<div class="msg-bubble">${esc(text)}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ═══════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function showAlert(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'alert ' + type + ' show';
+  el.textContent = msg;
+  setTimeout(() => { el.className = 'alert'; }, 7000);
+}
+</script>
+</body>
+</html>
