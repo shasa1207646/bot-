@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import pool from '../db/pool';
 import { sendApplicationToDiscord } from '../bot/bot';
-import { sendApplicationToTelegram } from '../telegram/sender';
 
 const router = Router();
 
@@ -86,7 +85,6 @@ router.post('/curator', async (req, res) => {
 
   Promise.allSettled([
     sendApplicationToDiscord(appData),
-    sendApplicationToTelegram(appData),
   ]).catch(console.error);
 
   res.json({ success: true, message: 'Заявка на куратора отправлена!' });
