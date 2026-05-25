@@ -1,0 +1,6 @@
+[phases.build]
+cmds = [
+  "npm install",
+  "npm run build",
+  "ls -la public/ || echo 'WARNING: public/ missing'"
+]
