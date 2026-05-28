@@ -636,28 +636,52 @@ async function handleMessage(msg: TgMessage) {
 
 // ─── Polling ──────────────────────────────────────────────────────────────────
 
-let lastUpdateId = 0;
+let lastUpdateId  = 0;
+let pollingActive = false; // защита от двойного запуска
 
-async function poll() {
-  try {
-    const res = await tgRequest('getUpdates', {
-      offset: lastUpdateId + 1,
-      timeout: 25,
-      allowed_updates: ['message', 'callback_query'],
-    });
-    if (!res?.ok || !res.result?.length) return;
+function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
 
-    for (const update of res.result as TgUpdate[]) {
-      lastUpdateId = update.update_id;
-      try {
-        if (update.message)        await handleMessage(update.message);
-        if (update.callback_query) await handleCallback(update.callback_query);
-      } catch (e) {
-        console.error('[TG] Update error:', e);
+async function pollingLoop() {
+  if (pollingActive) {
+    console.warn('[TG] Polling уже запущен, повторный запуск отклонён');
+    return;
+  }
+  pollingActive = true;
+  console.log('[TG] Telegram-бот запущен ✅');
+
+  while (pollingActive) {
+    try {
+      const res = await tgRequest('getUpdates', {
+        offset: lastUpdateId + 1,
+        timeout: 25,
+        allowed_updates: ['message', 'callback_query'],
+      });
+
+      // 409 — другой экземпляр занял polling, ждём и пробуем снова
+      if (res?.error_code === 409) {
+        console.warn('[TG] 409 — другой процесс занял polling, жду 10 сек...');
+        await sleep(10000);
+        continue;
       }
+
+      if (!res?.ok || !res.result?.length) {
+        await sleep(200);
+        continue;
+      }
+
+      for (const update of res.result as TgUpdate[]) {
+        lastUpdateId = update.update_id;
+        try {
+          if (update.message)        await handleMessage(update.message);
+          if (update.callback_query) await handleCallback(update.callback_query);
+        } catch (e) {
+          console.error('[TG] Update error:', e);
+        }
+      }
+    } catch (e: any) {
+      console.error('[TG] Poll error:', e?.message);
+      await sleep(3000);
     }
-  } catch (e: any) {
-    console.error('[TG] Poll error:', e?.message);
   }
 }
 
@@ -672,13 +696,12 @@ export function startTelegramBot() {
     console.warn('[TG] TELEGRAM_ADMIN_IDS не задан — доступ открыт для всех (небезопасно!)');
   }
 
-  // Удаляем вебхук (если был задан) — иначе polling вернёт 409
+  // Удаляем вебхук → сбрасываем очередь → запускаем loop
   tgRequest('deleteWebhook', { drop_pending_updates: false })
     .then(() => tgRequest('getUpdates', { offset: -1 }))
     .then(r => {
       if (r?.result?.length) lastUpdateId = r.result[r.result.length - 1].update_id;
-      setInterval(poll, 1000);
-      console.log('[TG] Telegram-бот запущен ✅');
+      pollingLoop(); // намеренно не await — работает в фоне
     })
     .catch(e => console.error('[TG] Ошибка запуска:', e));
 }
