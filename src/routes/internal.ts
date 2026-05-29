@@ -59,6 +59,41 @@ router.post('/internal/decision', async (req, res) => {
   }
 });
 
+// POST /api/internal/bot/session — сохранение Discord-сессии из Telegram-бота
+router.post('/internal/bot/session', async (req, res) => {
+  if (!checkSecret(req, res)) return;
+
+  const { telegram_user_id, discord_username, discord_user_id, is_moderator } = req.body;
+  if (!telegram_user_id || !discord_user_id || !discord_username) {
+    return res.status(400).json({ error: 'Обязательные поля: telegram_user_id, discord_user_id, discord_username' });
+  }
+
+  try {
+    const crypto = await import('crypto');
+    const sessionId = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 дней
+
+    await pool.query(
+      `INSERT INTO web_mod_sessions (id, discord_id, discord_username, discord_avatar, is_moderator, telegram_user_id, created_at, expires_at)
+       VALUES ($1, $2, $3, '', $4, $5, NOW(), $6)
+       ON CONFLICT (id) DO NOTHING`,
+      [sessionId, discord_user_id, discord_username, is_moderator ?? false, String(telegram_user_id), expiresAt]
+    );
+
+    // Удаляем устаревшие сессии для этого Telegram-пользователя
+    await pool.query(
+      `DELETE FROM web_mod_sessions WHERE telegram_user_id=$1 AND id<>$2`,
+      [String(telegram_user_id), sessionId]
+    );
+
+    console.log(`[Internal] Сессия создана для Telegram-пользователя ${telegram_user_id} (Discord: ${discord_username})`);
+    res.json({ success: true, session_id: sessionId });
+  } catch (err: any) {
+    console.error('[Internal] Ошибка создания сессии:', err);
+    res.status(500).json({ error: 'Внутренняя ошибка' });
+  }
+});
+
 // GET /api/internal/pending-applications
 router.get('/internal/pending-applications', async (req, res) => {
   if (!checkSecret(req, res)) return;

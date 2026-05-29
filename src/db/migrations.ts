@@ -55,6 +55,8 @@ export async function runMigrations() {
         expires_at       TIMESTAMP
       );
 
+      ALTER TABLE web_mod_sessions ADD COLUMN IF NOT EXISTS telegram_user_id TEXT;
+
       CREATE TABLE IF NOT EXISTS mutes (
         id          SERIAL PRIMARY KEY,
         user_id     VARCHAR(30) NOT NULL,
